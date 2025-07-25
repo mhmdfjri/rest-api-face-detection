@@ -1,0 +1,152 @@
+{% extends "layout.html" %} {% block title %}Dashboard{% endblock %} {% block
+content %}
+<!-- Main Content -->
+<div class="flex-1 flex flex-col overflow-hidden">
+  <!-- Top Header -->
+  <header class="bg-white shadow-sm z-10">
+    <div class="px-4 sm:px-6 lg:px-8 py-4 flex items-center justify-between">
+      <h1 class="text-xl font-semibold text-gray-800">Dashboard</h1>
+    </div>
+  </header>
+
+  <!-- Content Area -->
+  <main class="flex-1 overflow-y-auto p-4 sm:p-6 lg:p-8 bg-gray-50">
+    <!-- Date & Time -->
+    <div class="mb-6">
+      <p id="date" class="text-sm text-gray-500"></p>
+    </div>
+
+    <!-- Metric Cards -->
+    <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-5 mb-8">
+      <!-- Total Hairstyle -->
+      <div class="bg-white rounded-lg shadow-sm p-6 metric-card">
+        <div class="flex justify-between items-start">
+          <div>
+            <p class="text-sm font-medium text-gray-500">Total Gaya Rambut</p>
+            <h3 class="text-3xl font-bold text-gray-900 mt-2">
+              {{ total_hairstyle }}
+            </h3>
+          </div>
+          <div
+            class="w-10 h-10 flex items-center justify-center bg-primary bg-opacity-10 rounded-full text-primary"
+          >
+            <i class="ri-scissors-line"></i>
+          </div>
+        </div>
+      </div>
+
+      <!-- Total Pengguna -->
+      <div class="bg-white rounded-lg shadow-sm p-6 metric-card">
+        <div class="flex justify-between items-start">
+          <div>
+            <p class="text-sm font-medium text-gray-500">Total Pengguna</p>
+            <h3 class="text-3xl font-bold text-gray-900 mt-2">
+              {{ total_users }}
+            </h3>
+          </div>
+          <div
+            class="w-10 h-10 flex items-center justify-center bg-primary bg-opacity-10 rounded-full text-primary"
+          >
+            <i class="ri-user-line"></i>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="mt-8">
+      <h2 class="text-lg font-semibold text-gray-800 mb-4">
+        Gaya Rambut Terpopuler
+      </h2>
+      <div class="bg-white rounded-lg shadow-sm overflow-hidden">
+        <div class="table-container">
+          <table class="min-w-full">
+            <thead>
+              <tr class="bg-gray-50 border-b border-gray-200">
+                <th
+                  class="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider"
+                >
+                  No
+                </th>
+                <th
+                  class="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider"
+                >
+                  Nama Gaya Rambut
+                </th>
+                <th
+                  class="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider"
+                >
+                  Gambar
+                </th>
+                <th
+                  class="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider"
+                >
+                  Bentuk Wajah
+                </th>
+                <th
+                  class="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider"
+                >
+                  Likes
+                </th>
+              </tr>
+            </thead>
+            <tbody class="bg-white divide-y divide-gray-200">
+              {% if top_hairstyles %} {% for h in top_hairstyles %}
+              <tr>
+                <td class="px-4 py-4 whitespace-nowrap text-sm text-gray-900">
+                  {{ loop.index }}
+                </td>
+                <td
+                  class="px-4 py-4 whitespace-nowrap text-sm font-medium text-gray-900"
+                >
+                  {{ h.name }}
+                </td>
+                <td class="px-4 py-4 whitespace-nowrap">
+                  <div class="h-16 w-16 rounded-md overflow-hidden bg-gray-100">
+                    <img
+                      src="{{ url_for('static', filename='hair_cut_recommendation/' ~ h.face_shape[0] ~ '/' ~ h.image) if h.face_shape else '' }}"
+                      class="h-full w-full object-cover object-top"
+                      alt="{{ h.name }}"
+                    />
+                  </div>
+                </td>
+                <td class="px-4 py-4 whitespace-nowrap text-sm text-gray-700">
+                  <div class="flex flex-wrap gap-2">
+                    {% for shape in h.face_shape %}
+                    <span class="badge bg-primary bg-opacity-10 text-primary"
+                      >{{ shape }}</span
+                    >
+                    {% endfor %}
+                  </div>
+                </td>
+                <td
+                  class="px-4 py-4 whitespace-nowrap text-sm font-bold text-gray-900"
+                >
+                  {{ h.like_count }}
+                </td>
+              </tr>
+              {% endfor %} {% else %}
+              <tr>
+                <td colspan="5" class="text-center py-8 text-sm text-gray-500">
+                  Belum ada data gaya rambut.
+                </td>
+              </tr>
+              {% endif %}
+            </tbody>
+          </table>
+        </div>
+        <div class="px-4 py-3 border-t border-gray-200 text-center">
+          <a
+            href="{{ url_for('hairstyle.index') }}"
+            class="text-sm font-medium text-primary hover:text-primary/90"
+          >
+            Lihat Semua Gaya Rambut &rarr;
+          </a>
+        </div>
+      </div>
+    </div>
+  </main>
+</div>
+
+<script src="../static/js/date.js"></script>
+
+{% endblock %}
