@@ -65,15 +65,17 @@ def get_liked_hairstyles():
     cursor = mysql.connection.cursor(MySQLdb.cursors.DictCursor)
 
     cursor.execute("""
-        SELECT h.*,
+        SELECT h.*, 
+            MAX(ul.id) AS user_like_id,
             (SELECT COUNT(*) FROM user_likes WHERE hairstyle_id = h.id) AS likes,
             1 AS is_liked
         FROM hairstyles h
         JOIN user_likes ul ON h.id = ul.hairstyle_id
         WHERE ul.user_id = %s
         GROUP BY h.id
-        ORDER BY ul.id DESC
+        ORDER BY user_like_id DESC
     """, (user_id,))
+
 
     liked_styles = cursor.fetchall()
     processed_styles = []
